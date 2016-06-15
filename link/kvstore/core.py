@@ -11,6 +11,8 @@ class KeyValueStore(Middleware):
     :type backend: Driver
     """
 
+    __protocols__ = ['kvstore']
+
     def __init__(self, backend, *args, **kwargs):
         super(KeyValueStore, self).__init__(*args, **kwargs)
 
