@@ -84,7 +84,7 @@ class KVStoreTest(UTCase):
         attrs = {
             'keys.return_value': expected
         }
-        self.configure_mock(**attrs)
+        self.backend.configure_mock(**attrs)
 
         result = [key for key in self.store]
 
