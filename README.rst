@@ -63,3 +63,34 @@ Features
 
  * database agnostic
  * dict API to access key/value store
+
+Examples
+--------
+
+Getting a backend:
+
+.. code-block:: python
+
+   from link.middleware.core import Middleware
+
+   # Instanciate a K/V store with Riak backend
+   store = Middleware.get_middleware_by_uri(
+       'kvstore+riak://localhost:8087/mybuckettype/mybucket?protocol=pbc'
+   )
+   # Instanciate a K/V store with SQL backend
+   store = Middleware.get_middleware_by_uri(
+       'kvstore+sql://localhost:5432/database/table'
+   )
+
+Accessing data:
+
+.. code-block:: python
+
+   store['foo'] = 'bar'
+   assert store['foo'] == 'bar'
+   assert 'foo' in store
+
+   for key in store:
+       print(key)
+
+   del store['foo']
