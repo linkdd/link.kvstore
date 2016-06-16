@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from link.middleware.core import Middleware
+from link.kvstore.driver import Driver
 
 
 class KeyValueStore(Middleware):
@@ -11,6 +12,7 @@ class KeyValueStore(Middleware):
     :type backend: Driver
     """
 
+    __constraints__ = [Driver]
     __protocols__ = ['kvstore']
 
     def __init__(self, backend, *args, **kwargs):
