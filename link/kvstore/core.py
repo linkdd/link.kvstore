@@ -34,3 +34,9 @@ class KeyValueStore(Middleware):
 
     def __iter__(self):
         return iter(self._backend.keys())
+
+    def disconnect(self):
+        self._backend.disconnect()
+
+    def __del__(self):
+        self.disconnect()
