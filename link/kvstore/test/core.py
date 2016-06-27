@@ -114,16 +114,26 @@ class KVStoreTest(UTCase):
         self.assertTrue(result)
         self.backend.exists.assert_called_with('foo')
 
-    def test_contains_manyitem(self):
-        expected = [True, False]
+    def test_contains_manyitem_false(self):
         attrs = {
-            'multiexists.return_value': expected
+            'multiexists.return_value': [True, False]
         }
         self.backend.configure_mock(**attrs)
 
         result = ('foo', 'bar') in self.store
 
-        self.assertEqual(result, expected)
+        self.assertFalse(result)
+        self.backend.multiexists.assert_called_with(('foo', 'bar'))
+
+    def test_contains_manyitem_true(self):
+        attrs = {
+            'multiexists.return_value': [True, True]
+        }
+        self.backend.configure_mock(**attrs)
+
+        result = ('foo', 'bar') in self.store
+
+        self.assertTrue(result)
         self.backend.multiexists.assert_called_with(('foo', 'bar'))
 
     def test_iter_keys(self):
