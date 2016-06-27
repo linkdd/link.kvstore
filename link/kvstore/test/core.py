@@ -13,7 +13,8 @@ class KVStoreTest(UTCase):
         self.backend = Mock()
         self.backend.__class__ = Driver
 
-        self.store = KeyValueStore(self.backend)
+        self.store = KeyValueStore()
+        self.store.set_child_middleware(self.backend)
 
     def test_get_item(self):
         attrs = {

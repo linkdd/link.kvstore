@@ -15,44 +15,39 @@ class KeyValueStore(Middleware):
     __constraints__ = [Driver]
     __protocols__ = ['kvstore']
 
-    def __init__(self, backend, *args, **kwargs):
-        super(KeyValueStore, self).__init__(*args, **kwargs)
-
-        self._backend = backend
-
     def __getitem__(self, attr):
         if isinstance(attr, tuple):
-            return self._backend.multiget(attr)
+            return self.get_child_middleware().multiget(attr)
 
         else:
-            return self._backend.get(attr)
+            return self.get_child_middleware().get(attr)
 
     def __setitem__(self, attr, val):
         if isinstance(attr, tuple):
-            self._backend.multiput(attr, val)
+            self.get_child_middleware().multiput(attr, val)
 
         else:
-            self._backend.put(attr, val)
+            self.get_child_middleware().put(attr, val)
 
     def __delitem__(self, attr):
         if isinstance(attr, tuple):
-            self._backend.multiremove(attr)
+            self.get_child_middleware().multiremove(attr)
 
         else:
-            self._backend.remove(attr)
+            self.get_child_middleware().remove(attr)
 
     def __contains__(self, attr):
         if isinstance(attr, tuple):
-            return all(self._backend.multiexists(attr))
+            return all(self.get_child_middleware().multiexists(attr))
 
         else:
-            return self._backend.exists(attr)
+            return self.get_child_middleware().exists(attr)
 
     def __iter__(self):
-        return iter(self._backend.keys())
+        return iter(self.get_child_middleware().keys())
 
     def disconnect(self):
-        self._backend.disconnect()
+        self.get_child_middleware().disconnect()
 
     def __del__(self):
         self.disconnect()
