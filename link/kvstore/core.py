@@ -21,16 +21,32 @@ class KeyValueStore(Middleware):
         self._backend = backend
 
     def __getitem__(self, attr):
-        return self._backend.get(attr)
+        if isinstance(attr, tuple):
+            return self._backend.multiget(attr)
+
+        else:
+            return self._backend.get(attr)
 
     def __setitem__(self, attr, val):
-        self._backend.put(attr, val)
+        if isinstance(attr, tuple):
+            self._backend.multiput(attr, val)
+
+        else:
+            self._backend.put(attr, val)
 
     def __delitem__(self, attr):
-        self._backend.remove(attr)
+        if isinstance(attr, tuple):
+            self._backend.multiremove(attr)
+
+        else:
+            self._backend.remove(attr)
 
     def __contains__(self, attr):
-        return self._backend.exists(attr)
+        if isinstance(attr, tuple):
+            return all(self._backend.multiexists(attr))
+
+        else:
+            return self._backend.exists(attr)
 
     def __iter__(self):
         return iter(self._backend.keys())

@@ -41,12 +41,32 @@ class DriverTest(UTCase):
 
         self.driver._get.assert_called_with(self.conn, 'foo')
 
+    def test_get_multiitem(self):
+        expected = ['bar', 'baz']
+        self.driver._multiget = MagicMock(return_value=expected)
+
+        result = self.driver.multiget(('foo', 'bar'))
+
+        self.assertEqual(result, expected)
+        self.driver._multiget.assert_called_with(self.conn, ('foo', 'bar'))
+
     def test_put_item(self):
         self.driver._put = MagicMock()
 
         self.driver.put('foo', 'bar')
 
         self.driver._put.assert_called_with(self.conn, 'foo', 'bar')
+
+    def test_put_multiitem(self):
+        self.driver._multiput = MagicMock()
+
+        self.driver.multiput(('foo', 'bar'), ['bar', 'baz'])
+
+        self.driver._multiput.assert_called_with(
+            self.conn,
+            ('foo', 'bar'),
+            ['bar', 'baz']
+        )
 
     def test_del_item(self):
         self.driver._remove = MagicMock()
@@ -55,6 +75,13 @@ class DriverTest(UTCase):
 
         self.driver._remove.assert_called_with(self.conn, 'foo')
 
+    def test_del_multiitem(self):
+        self.driver._multiremove = MagicMock()
+
+        self.driver.multiremove(('foo', 'bar'))
+
+        self.driver._multiremove.assert_called_with(self.conn, ('foo', 'bar'))
+
     def test_contains_item(self):
         self.driver._exists = MagicMock(return_value=True)
 
@@ -62,6 +89,15 @@ class DriverTest(UTCase):
 
         self.assertTrue(result)
         self.driver._exists.assert_called_with(self.conn, 'foo')
+
+    def test_contains_multiitem(self):
+        expected = [True, False]
+        self.driver._multiexists = MagicMock(return_value=expected)
+
+        result = self.driver.multiexists(('foo', 'bar'))
+
+        self.assertEqual(result, expected)
+        self.driver._multiexists.assert_called_with(self.conn, ('foo', 'bar'))
 
     def test_get_keys(self):
         expected = ['foo', 'bar', 'baz']

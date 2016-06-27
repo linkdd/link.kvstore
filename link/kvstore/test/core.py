@@ -37,6 +37,18 @@ class KVStoreTest(UTCase):
 
         self.backend.get.assert_called_with('foo')
 
+    def test_get_manyitem(self):
+        expected = ['bar', 'baz']
+        attrs = {
+            'multiget.return_value': expected
+        }
+        self.backend.configure_mock(**attrs)
+
+        result = self.store['foo', 'bar']
+
+        self.assertEqual(result, expected)
+        self.backend.multiget.assert_called_with(('foo', 'bar'))
+
     def test_set_item(self):
         attrs = {
             'put.return_value': None
@@ -46,6 +58,19 @@ class KVStoreTest(UTCase):
         self.store['foo'] = 'bar'
 
         self.backend.put.assert_called_with('foo', 'bar')
+
+    def test_set_manyitem(self):
+        attrs = {
+            'multiput.return_value': None
+        }
+        self.backend.configure_mock(**attrs)
+
+        self.store['foo', 'bar'] = ['bar', 'baz']
+
+        self.backend.multiput.assert_called_with(
+            ('foo', 'bar'),
+            ['bar', 'baz']
+        )
 
     def test_del_item(self):
         attrs = {
@@ -68,6 +93,16 @@ class KVStoreTest(UTCase):
 
         self.backend.remove.assert_called_with('foo')
 
+    def test_del_manyitem(self):
+        attrs = {
+            'multiremove.return_value': None
+        }
+        self.backend.configure_mock(**attrs)
+
+        del self.store['foo', 'bar']
+
+        self.backend.multiremove.assert_called_with(('foo', 'bar'))
+
     def test_contains_item(self):
         attrs = {
             'exists.return_value': True
@@ -78,6 +113,18 @@ class KVStoreTest(UTCase):
 
         self.assertTrue(result)
         self.backend.exists.assert_called_with('foo')
+
+    def test_contains_manyitem(self):
+        expected = [True, False]
+        attrs = {
+            'multiexists.return_value': expected
+        }
+        self.backend.configure_mock(**attrs)
+
+        result = ('foo', 'bar') in self.store
+
+        self.assertEqual(result, expected)
+        self.backend.multiexists.assert_called_with(('foo', 'bar'))
 
     def test_iter_keys(self):
         expected = ['foo', 'bar', 'baz']
