@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from link.middleware.core import Middleware
+from link.middleware.core import Middleware, register_middleware
 from link.kvstore.driver import Driver
 
 
+@register_middleware
 class KeyValueStore(Middleware):
     """
     Key/Value store middleware providing dict API.
