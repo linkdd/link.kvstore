@@ -20,7 +20,7 @@ REQUIREMENTS = [
 ]
 
 CLASSIFIERS = [
-    'Development Status :: 3 - Alpha',
+    'Development Status :: 5 - Production/Stable',
     'License :: OSI Approved :: MIT License',
     'Operating System :: OS Independent',
     'Topic :: Utilities',
